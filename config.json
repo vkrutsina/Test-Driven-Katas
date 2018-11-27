@@ -1,0 +1,14 @@
+{
+    "protocol": "https",
+    "host": "emvisage",
+    "apiVersion": "3",
+    "strictSSL": true,
+    "user": "amanda.nelson@emvisage.com",
+    "url": "https://emvisage.atlassian.net/rest/api/3/issue/:issueNumber",
+    "auth": { "bearer": "UAQyZcRmXMd3Ezw90l412EDE" },
+    "headers": {
+        "authorization": "Basic YW1hbmRhLm5lbHNvbkBlbXZpc2FnZS5jb206VUFReVpjUm1YTWQzRXp3OTBsNDEyRURF",
+        "Accept": "application/json"
+   },
+   "body": "bodyData"
+}
