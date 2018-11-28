@@ -8,7 +8,7 @@ class HttpError {
   static log(error) {
     console.error('[ERR][HTTP]', error);
     if (process.env.NODE_ENV !== 'development') {
-      Sentry.captureException(err);
+      Sentry.captureException(error);
     }
   }
 

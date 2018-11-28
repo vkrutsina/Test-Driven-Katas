@@ -49,11 +49,27 @@ class Emvisage {
       .catch(HttpError.log);
   }
 
+  static deleteResource(resourceId, resource) {
+    return _network
+      .delete(`/resource/${resourceId}`, resource)
+      .then(res => res.data)
+      .catch(HttpError.log);
+  }
   static getMaterialResources(materialId) {
     return _network
       .get(`/material/${materialId}/resource`)
       .then(res => res.data)
       .catch(HttpError.log);
+  }
+
+  static mapData(body, resource) {
+    resource.duration = body.data.points;
+    resource.week = body.data.sprintStartWeek;
+    resource.year = body.data.sprintStartYear;
+    resource.target_id = parseInt(body.data.actor_assignee);
+    resource.name = body.data.resourceTeam;
+    resource.material_id = body.id;
+    return resource;
   }
 }
 
