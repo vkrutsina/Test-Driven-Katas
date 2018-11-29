@@ -35,15 +35,15 @@ app.post('/issue', (req, res) => {
     .catch(err => {
       console.error(err);
       console.log("status code is", err.request.res.statusCode);
-      return res.send(err);
+      return res.sendStatus(err.request.res.statusCode);
     });
 });
 
 //editing an issue - put from EMV to Jira
-app.put('/issue/:issueIdOrKey', (req, res) => {
+app.put('/issue', (req, res) => {
 
   const issue = req.body;
-  const issueIdOrKey = req.params.issueIdOrKey;
+  const issueIdOrKey = req.body.data.jiraID;
 
   console.log(issue);
   jira.mapDataUpdate(req.body, issue);
@@ -57,8 +57,8 @@ app.put('/issue/:issueIdOrKey', (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      console.log("status code is", err.request.res.statusCode);
-      return res.send(err);
+      console.log(err.request.res.statusCode);
+      return res.sendStatus(err.request.res.statusCode);
     });
 });
 
@@ -105,7 +105,7 @@ app.post(`/resource`, (req, res) => {
           })
           .catch(err => {
             console.error(err);
-            return res.send(err);
+            return res.sendStatus(err.request.res.statusCode);
           });
       }
       else {
@@ -121,13 +121,13 @@ app.post(`/resource`, (req, res) => {
           })
           .catch(err => {
             console.error(err);
-            return res.send(err);
+            return res.sendStatus(err.request.res.statusCode);
           });
       }
     })
     .catch(err => {
       console.error(err);
-      return res.send(err);
+      return res.sendStatus(err.request.res.statusCode);
     });
 });
 
