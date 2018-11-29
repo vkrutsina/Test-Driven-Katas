@@ -2,7 +2,7 @@ const express = require('express');
 const jira = require('./services/jira');
 const _ = require('lodash');
 const emvisage = require('./services/emvisage');
-const bodyParser = require('body-parser'); 
+const bodyParser = require('body-parser');
 
 const Controller = require('./controllers/controller');
 
@@ -21,4 +21,7 @@ app.post('/issue', Controller.createJira);
 app.post('/sync', Controller.sync);
 
 
-app.listen(port, () => console.log(`Middleware listening on port ${port}`));
+app.listen(port, () => {
+  console.log(`Middleware listening on port ${port}`)
+  console.log('Environment is', process.env.NODE_ENV);
+});

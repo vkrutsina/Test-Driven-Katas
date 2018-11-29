@@ -48,7 +48,7 @@ class Emvisage {
 
   static deleteResource(resourceId, resource) {
     return _network
-      .delete(`/resource/${resourceId}`, resource)
+      .delete(`/resource/${resourceId}`)
       .then(res => res.data)
       .catch(HttpError.log);
   }
@@ -67,6 +67,8 @@ class Emvisage {
     resource.target_id = parseInt(body.data.actor_assignee);
     resource.name = body.data.resourceTeam;
     resource.material_id = body.id;
+    resource.capacity = 5;
+
     return resource;
   }
 }
