@@ -4,145 +4,21 @@ const _ = require('lodash');
 const emvisage = require('./services/emvisage');
 const bodyParser = require('body-parser'); 
 
+const Controller = require('./controllers/controller');
+
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 3000;
 
-app.get('/', (req, res) => res.send('online'));
+app.get('/', Controller.online);
+app.put('/issue', Controller.putJira);
+app.post('/resource', Controller.postResource);
+app.delete('/resource', Controller.deleteResource);
+app.post('/issue', Controller.createJira);
 
-//creating an initiative in Jira from EMV 
-app.post('/issue', (req, res) => {
+app.post('/sync', Controller.sync);
 
-  const issue = req.body;
-  console.log(issue);
-
-  jira.mapDataCreate(req.body, issue);
-  console.log(issue);
-  
-  jira
-    .createIssue(issue)
-    .then(issueResult => {    
-
-      console.log("Issue Created");
-      
-      return res.send(issueResult);
-
-//then push to EMV to link the Jira ID - V2
-
-    })
-    .catch(err => {
-      console.error(err);
-      console.log("status code is", err.request.res.statusCode);
-      return res.sendStatus(err.request.res.statusCode);
-    });
-});
-
-//editing an issue - put from EMV to Jira
-app.put('/issue', (req, res) => {
-
-  const issue = req.body;
-  const issueIdOrKey = req.body.data.jiraID;
-
-  console.log(issue);
-  jira.mapDataUpdate(req.body, issue);
-
-  jira
-    .editIssue(issueIdOrKey, issue)
-    .then(issueResult => {
-
-      console.log("Issue Updated");
-      return res.send(issueResult);
-    })
-    .catch(err => {
-      console.error(err);
-      console.log(err.request.res.statusCode);
-      return res.sendStatus(err.request.res.statusCode);
-    });
-});
-
-//GET issue from Jira
-app.get(`/issue/:issueIdOrKey`, (req, res) => {
-
-  const issueIdOrKey = req.params.issueIdOrKey;
-
-  jira
-    .getIssue(issueIdOrKey)
-    .then(issue => {
-      console.log("Issue Get");
-      res.send(issue);
-    })
-    .catch(err => {
-      console.error(err);
-      return res.send(err);
-    });
-});
-
-
-//add or edit resource from story to resource tab in EMV - EMV to EMV Resource post
-app.post(`/resource`, (req, res) => {
-  const resource = req.body;
-  console.log(resource);
-  console.log(_.keys(req));
-
-  emvisage
-    .getMaterialResources(req.body.id)
-    .then(resources => {
-
-      if(resources.length > 0) {
-
-        const updateResource = emvisage.mapData(req.body, resources[0]);
-        const resourceId = resources[0].id;
-
-        console.log("Updating Resource", updateResource);
-
-        emvisage
-          .editResource(resourceId, updateResource)
-          .then(updateResourceResult => {
-            console.log(`Resource: ${updateResourceResult}`);
-            return res.send(updateResourceResult);
-          })
-          .catch(err => {
-            console.error(err);
-            return res.sendStatus(err.request.res.statusCode);
-          });
-      }
-      else {
-        const newResource = emvisage.mapData(req.body, {});
-
-        console.log("Creating Resource", newResource);
-
-        emvisage
-          .createResource(newResource)
-          .then(newResourceResult => {
-            console.log(`Resource: ${newResourceResult}`);
-            return res.send(newResourceResult);
-          })
-          .catch(err => {
-            console.error(err);
-            return res.sendStatus(err.request.res.statusCode);
-          });
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      return res.sendStatus(err.request.res.statusCode);
-    });
-});
-
-//deleting a resource 
-app.delete(`/resource/:resourceId`, (req, res) => {
-
-  emvisage
-    .deleteResource(req.params.resourceId)
-    .then(resourceId => {
-      res.send(resourceId);
-    })
-    .catch(err => {
-      console.error(err);
-      return res.send(err);
-    });
-});
 
 app.listen(port, () => console.log(`Middleware listening on port ${port}`));
