@@ -67,6 +67,8 @@ class Emvisage {
     resource.target_id = parseInt(body.data.actor_assignee);
     resource.name = body.data.resourceTeam;
     resource.material_id = body.id;
+    resource.capacity = 10;
+
     return resource;
   }
 }

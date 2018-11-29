@@ -2,7 +2,7 @@ const express = require('express');
 const jira = require('./services/jira');
 const _ = require('lodash');
 const emvisage = require('./services/emvisage');
-const bodyParser = require('body-parser'); 
+const bodyParser = require('body-parser');
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 
 app.get('/', (req, res) => res.send('online'));
 
-//creating an initiative in Jira from EMV 
+//creating an initiative in Jira from EMV
 app.post('/issue', (req, res) => {
 
   const issue = req.body;
@@ -20,13 +20,13 @@ app.post('/issue', (req, res) => {
 
   jira.mapDataCreate(req.body, issue);
   console.log(issue);
-  
+
   jira
     .createIssue(issue)
-    .then(issueResult => {    
+    .then(issueResult => {
 
       console.log("Issue Created");
-      
+
       return res.send(issueResult);
 
 //then push to EMV to link the Jira ID - V2
@@ -131,7 +131,7 @@ app.post(`/resource`, (req, res) => {
     });
 });
 
-//deleting a resource 
+//deleting a resource
 app.delete(`/resource/:resourceId`, (req, res) => {
 
   emvisage
@@ -145,4 +145,7 @@ app.delete(`/resource/:resourceId`, (req, res) => {
     });
 });
 
-app.listen(port, () => console.log(`Middleware listening on port ${port}`));
+app.listen(port, () => {
+  console.log(`Middleware listening on port ${port}`)
+  console.log('Environment is', process.env.NODE_ENV);
+});
