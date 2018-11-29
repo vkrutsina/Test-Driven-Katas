@@ -11,40 +11,65 @@ app.use(bodyParser.json());
 const port = process.env.PORT || 3000;
 
 //creating an initiative in Jira from EMV 
-app.put('/issue/:issueId', (req, res) => {
+app.post('/issue', (req, res) => {
 
   const issue = req.body;
   console.log(issue);
 
+  jira.mapDataCreate(req.body, issue);
+  console.log(issue);
+  
   jira
     .createIssue(issue)
-    .then(issue => {
-
-      emvisage.mapData(req.body, issue);
+    .then(issueResult => {    
 
       console.log("Issue Created");
-      return res.send(issue);
+      
+      return res.send(issueResult);
+
+//then push to EMV to link the Jira ID - V2
+
     })
     .catch(err => {
       console.error(err);
+      console.log("status code is", err.request.res.statusCode);
       return res.send(err);
     });
 });
 
 //editing an issue - put from EMV to Jira
-app.put('/issue/:issueId', (req, res) => {
+app.put('/issue/:issueIdOrKey', (req, res) => {
 
   const issue = req.body;
+  const issueIdOrKey = req.params.issueIdOrKey;
+
   console.log(issue);
+  jira.mapDataUpdate(req.body, issue);
 
   jira
-    .editIssues(issue)
-    .then(issue => {
-      
-      emvisage.mapData(req.body, issue);
+    .editIssue(issueIdOrKey, issue)
+    .then(issueResult => {
 
       console.log("Issue Updated");
-      return res.send(issue);
+      return res.send(issueResult);
+    })
+    .catch(err => {
+      console.error(err);
+      console.log("status code is", err.request.res.statusCode);
+      return res.send(err);
+    });
+});
+
+//GET issue from Jira
+app.get(`/issue/:issueIdOrKey`, (req, res) => {
+
+  const issueIdOrKey = req.params.issueIdOrKey;
+
+  jira
+    .getIssue(issueIdOrKey)
+    .then(issue => {
+      console.log("Issue Get");
+      res.send(issue);
     })
     .catch(err => {
       console.error(err);
@@ -52,7 +77,8 @@ app.put('/issue/:issueId', (req, res) => {
     });
 });
 
-//add resource from story to resource tab in EMV - EMV to EMV Resource post
+
+//add or edit resource from story to resource tab in EMV - EMV to EMV Resource post
 app.post(`/resource`, (req, res) => {
   const resource = req.body;
   console.log(resource);
@@ -64,15 +90,16 @@ app.post(`/resource`, (req, res) => {
 
       if(resources.length > 0) {
 
-        emvisage.mapData(req.body, resources[0]);
-        
-        console.log("Updating Resource", resource);
+        const updateResource = emvisage.mapData(req.body, resources[0]);
+        const resourceId = resources[0].id;
+
+        console.log("Updating Resource", updateResource);
 
         emvisage
-          .editResource(newResource)
-          .then(newResourceResult => {
-            console.log(`Resource: ${newResourceResult}`);
-            return res.send(newResourceResult);
+          .editResource(resourceId, updateResource)
+          .then(updateResourceResult => {
+            console.log(`Resource: ${updateResourceResult}`);
+            return res.send(updateResourceResult);
           })
           .catch(err => {
             console.error(err);

@@ -25,7 +25,6 @@ class Emvisage {
       .catch(HttpError.log);
   }
 
-
   static getResource(resource) {
     return _network
       .get(`/material/${materialId}`)
@@ -33,14 +32,12 @@ class Emvisage {
       .catch(HttpError.log);
   }
 
-
   static createResource(resource) {
     return _network
       .post(`/resource`, resource)
       .then(res => res.data)
       .catch(HttpError.log);
   }
-
 
   static editResource(resourceId, resource) {
     return _network
@@ -55,6 +52,7 @@ class Emvisage {
       .then(res => res.data)
       .catch(HttpError.log);
   }
+
   static getMaterialResources(materialId) {
     return _network
       .get(`/material/${materialId}/resource`)
