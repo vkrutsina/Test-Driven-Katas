@@ -35,7 +35,7 @@ app.post('/issue', (req, res) => {
     .catch(err => {
       console.error(err);
       console.log("status code is", err.request.res.statusCode);
-      return res.send(err);
+      return res.sendStatus(err.request.res.statusCode);
     });
 });
 
@@ -57,8 +57,8 @@ app.put('/issue', (req, res) => {
     })
     .catch(err => {
       console.error(err);
-      console.log("status code is", err.request.res.statusCode);
-      return res.send(err);
+      console.log(err.request.res.statusCode);
+      return res.sendStatus(err.request.res.statusCode);
     });
 });
 
@@ -105,7 +105,7 @@ app.post(`/resource`, (req, res) => {
           })
           .catch(err => {
             console.error(err);
-            return res.send(err);
+            return res.sendStatus(err.request.res.statusCode);
           });
       }
       else {
@@ -121,13 +121,13 @@ app.post(`/resource`, (req, res) => {
           })
           .catch(err => {
             console.error(err);
-            return res.send(err);
+            return res.sendStatus(err.request.res.statusCode);
           });
       }
     })
     .catch(err => {
       console.error(err);
-      return res.send(err);
+      return res.sendStatus(err.request.res.statusCode);
     });
 });
 
