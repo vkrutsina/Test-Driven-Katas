@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 
 const port = process.env.PORT || 3000;
 
+app.get('/', (req, res) => res.send('online'));
+
 //creating an initiative in Jira from EMV 
 app.post('/issue', (req, res) => {
 
