@@ -40,10 +40,10 @@ app.post('/issue', (req, res) => {
 });
 
 //editing an issue - put from EMV to Jira
-app.put('/issue/:issueIdOrKey', (req, res) => {
+app.put('/issue', (req, res) => {
 
   const issue = req.body;
-  const issueIdOrKey = req.params.issueIdOrKey;
+  const issueIdOrKey = req.body.data.jiraID;
 
   console.log(issue);
   jira.mapDataUpdate(req.body, issue);
